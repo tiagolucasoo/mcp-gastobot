@@ -1,0 +1,8 @@
+{
+   "$schema": "https://json-schema.org/draft/2020-12/schema",
+   "$id": "classpath:/json-schemas/auth-path.schema.json",
+   "title": "Diretório Autorizado",
+   "description": "Recupera o diretório (caminho) autorizado para operações com arquivos no servidor",
+   "type": "object",
+   "properties": {}
+}

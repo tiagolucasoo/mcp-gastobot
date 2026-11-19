@@ -1,0 +1,126 @@
+
+A primeira distinção que vale guardar é esta:
+- Tools: permitem que o modelo solicite a execução de operações no servidor.
+- Resources: permitem que o cliente consulte dados ou conteúdos disponibilizados
+  pelo servidor.
+- Prompts: permitem que o servidor ofereça modelos de interação, isto é,
+  instruções e mensagens previamente estruturadas que o cliente pode apresentar
+  ao usuário ou utilizar para orientar uma conversa com um modelo.
+
+O servidor precisa estar conectado a um modelo de linguagem para usar prompts?
+Não, esse é um dos pontos mais importantes para compreender os prompts no MCP.
+
+O servidor MCP não precisa possuir um modelo de linguagem, nem precisa se
+conectar a uma API de inteligência artificial.
+
+O servidor simplesmente disponibiliza os prompts.
+
+Separação de responsabilidades:
+- Servidor MCP Java
+  Disponibiliza o prompt analisar_pdf, seus argumentos e as mensagens que devem
+  ser utilizadas.
+  | ^
+  v |
+- Cliente MCP / Host
+  Descobre o prompt, solicita seu conteúdo e apresenta uma forma de utilização
+  ao usuário.
+  | ^
+  v |
+- Modelo de linguagem (quando utilizado)
+  Recebe as mensagens do prompt e produz uma resposta.
+
+Como acontece a utilização de um prompt?
+O fluxo normal tem quatro etapas:
+1. Descoberta — prompts/list
+   O cliente solicita ao servidor a relação de prompts disponíveis.
+
+2. Seleção pelo usuário
+   O usuário escolhe um prompt na interface do cliente. A especificação MCP
+   prevê essa utilização controlada pelo usuário, embora cada cliente possa
+   apresentar sua própria interface.
+
+3. Obtenção — prompts/get
+   O cliente solicita o prompt escolhido, enviando seus argumentos, quando
+   existirem. O servidor monta e devolve as mensagens.
+
+4. Interação com o modelo
+   O cliente utiliza as mensagens recebidas para iniciar ou orientar a interação
+   com o modelo de linguagem.
+
+Esse fluxo é definido pelo protocolo MCP.
+
+Exemplo prático:
+Servidor disponibiliza o prompt:
+Nome: analisar_pdf
+Descrição: Analisa um documento PDF e apresenta um resumo estruturado.
+
+Argumentos:
+- nome_arquivo: arquivo PDF que será analisado.
+- objetivo: finalidade da análise.
+
+Usuário seleciona o prompt e informa:
+nome_arquivo: relatorio.pdf
+objetivo: identificar os principais resultados
+
+Servidor pode devolver uma mensagem como:
+Analise o documento PDF fornecido.
+
+Identifique:
+1. Os principais resultados.
+2. As conclusões do documento.
+3. Os dados mais relevantes.
+
+Objetivo específico: identificar os principais resultados.
+
+O servidor não analisa o documento com um LLM. Ele apenas prepara e entrega as
+mensagens.
+
+O cliente é responsável por encaminhá-las ao modelo. O prompt pode, inclusive,
+conter um recurso incorporado (EmbeddedResource) ou uma imagem, além de texto.
+
+Prompts são diferentes de ferramentas?
+Característica    Tools                Resources            Prompts
+Finalidade        Executar operações   Disponibilizar dados Orientar interações
+
+Quem normalmente  Modelo, com mediação Cliente ou modelo,   Usuário
+decide utilizar   do cliente           conforme a aplicação
+
+Executa código no Sim                  Sim, para recuperar  Sim, para montar as
+servidor                               conteúdo             mensagens
+
+Depende de LLM    Não necessariamente  Não necessariamente  Não para
+                                                            disponibilizar;
+                                                            normalmente sim para
+                                                            aproveitar a
+                                                            interação
+
+Prompts não são ferramentas que o modelo escolhe e executa automaticamente. Na
+proposta tradicional do MCP, são modelos de interação apresentados ao usuário
+para seleção explícita.
+
+E se o cliente não oferecer suporte a prompts?
+O servidor pode implementar e disponibilizar prompts normalmente, mas o cliente
+precisa oferecer suporte à capacidade prompts para descobri-los e utilizá-los.
+
+Portanto:
+- O servidor Java pode oferecer tools, resources e prompts.
+- O Claude Desktop pode consumir as funcionalidades que suporta.
+- Outro cliente MCP pode oferecer suporte a tools e resources, mas não a
+  prompts.
+- O cliente CLI Java também poderá ser ampliado para listar e recuperar
+  prompts, mesmo sem possuir um LLM integrado.
+
+É possível testar a implementação dos prompts diretamente pelo próprio cliente
+Java.
+
+Uma distinção adicional: Prompts e Sampling
+Recurso  Direção da solicitação
+Prompts  Cliente solicita um prompt ao servidor
+Sampling Servidor solicita ao cliente uma geração utilizando um modelo de
+         linguagem
+
+Com Sampling, o servidor pode solicitar ao cliente que utilize seu modelo para
+gerar uma resposta. Isso é diferente de simplesmente disponibilizar um prompt.
+Naturalmente, o cliente precisa oferecer suporte a Sampling.
+
+

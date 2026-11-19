@@ -1,0 +1,15 @@
+{
+   "$schema": "https://json-schema.org/draft/2020-12/schema",
+   "$id": "classpath:/json-schemas/msword-word-counter.schema.json",
+   "title": "Contador de Palavras do MS Word",
+   "description": "Realiza a contagem de palavras em um arquivo do MS Word",
+   "type": "object",
+   "properties": {
+      "input_file": {
+         "type": "string",
+         "description" : "Arquivo de entrada (MS Word)"
+      }
+   },
+   "required": [ "input_file" ],
+   "additionalProperties": false
+}

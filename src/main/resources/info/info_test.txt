@@ -1,0 +1,14 @@
+
+==> duas classes
+clean test -Dtest=DadosTest,MouseTest
+
+==> todas as classes que compartilham o mesmo o mesmo sufixo
+clean test -Dtest=Dados*Test
+
+==> vários métodos de teste em uma classe
+clean test -Dtest=MouseTest#testCriar,MouseTest#testAtualizar,MouseTest#testRemover
+OU
+clean test -Dtest=MouseTest#testCriar+testAtualizar+testRemover
+
+==> várias classes e métodos específicos
+clean test -Dtest=DadosTest#testCriar,MouseTest#testConectar+testDesconectar

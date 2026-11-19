@@ -1,0 +1,77 @@
+
+# OS TRÊS COMANDOS A SEGUIR ESTÃO AQUI APENAS PARA REFERÊNCIA
+# docker compose down
+# docker compose build --no-cache
+# docker compose up -d
+
+
+# Cria a imagem do MCP Inspector + MCP Java Server
+# docker compose up -d --build mcp-inspector
+
+# para testar o MCP Java Server com o Claude Desktop, o serviço "mcp-server"
+# será executado quando o Claude Desktop for inicializado
+
+services:
+   # nome do serviço exibido na interface e pelos comandos do Docker
+   mcp-inspector:
+     # executa o "build" da imagem definido no arquivo "Dockerfile"
+     build:
+       # o "build" é executado no diretório corrente (diretório raiz do
+       # projeto)
+       context: .
+       # nome do arquivo com instruções para criar a imagem
+       dockerfile: Dockerfile
+
+     # nome do contêiner 
+     container_name: mcp-inspector
+     # servidor/ip e porta em que a aplicação responderá
+     ports:
+       - "127.0.0.1:6274:6274"
+     # MCP_FILES_ROOT é usada pela ferramente de busca de arquivos
+     environment:
+       MCP_FILES_ROOT: ${MCP_FILES_CONTAINER}
+       LANG: C.UTF-8
+       LC_ALL: C.UTF-8
+     # 
+     # ro: read-only
+     volumes:
+       - ./server:${MCP_CONTAINER}/server:ro
+       - type: bind
+         source: ${MCP_FILES_HOST}
+         target: ${MCP_FILES_CONTAINER}
+         # REMOVER A LINHA ABAIXO PODE CAUSAR BRECHAS DE SEGURANÇA
+         # FAÇA ISTO COM RESPONSABILIDADE!!!
+#         read_only: true
+     # executa o servidor MCP em Java
+     command:
+       - -e
+       - LANG=C.UTF-8
+       - -e
+       - LC_ALL=C.UTF-8
+       - java
+       - -Dmcp.files.root=${MCP_FILES_CONTAINER}
+       - -jar
+       - ${MCP_CONTAINER}/server/mcp_server01_server.jar
+
+   mcp-server:
+      build:
+         context: .
+         dockerfile: Dockerfile
+
+      entrypoint: ["java"]
+
+      environment:
+         MCP_FILES_ROOT: ${MCP_FILES_CONTAINER}
+         LANG: C.UTF-8
+         LC_ALL: C.UTF-8
+
+      volumes:
+         - ./server:${MCP_CONTAINER}/server:ro
+         - type: bind
+           source: ${MCP_FILES_HOST}
+           target: ${MCP_FILES_CONTAINER}
+
+      command:
+         - -Dmcp.files.root=${MCP_FILES_CONTAINER}
+         - -jar
+         - ${MCP_CONTAINER}/server/mcp_server01_server.jar
