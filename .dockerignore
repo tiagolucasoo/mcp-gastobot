@@ -1,0 +1,10 @@
+.git
+.tools
+target
+data
+src
+.env
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

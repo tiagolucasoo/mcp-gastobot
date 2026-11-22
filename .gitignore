@@ -1,8 +1,14 @@
 # ---------------------------------------------------------------
 # Maven / build
 # ---------------------------------------------------------------
-target/
-server/
+/target/
+/server/
+/.tools/
+/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
 dependency-reduced-pom.xml
 *.class
 *.jar
