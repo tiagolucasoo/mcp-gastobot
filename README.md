@@ -2,6 +2,8 @@
 
 Controle de entradas e saídas em Java, com servidor e cliente MCP no mesmo projeto Maven. Usa Controller → Service → Repository, DTOs imutáveis com records e SQLite via JDBC. Sem Spring, Lombok ou geração de código da aplicação.
 
+Abra o GastoBot no Telegram pelo link [@TiagoLucas_bot](https://t.me/TiagoLucas_bot).
+
 ## Estado atual
 
 - Registro de entradas e saídas no SQLite.
